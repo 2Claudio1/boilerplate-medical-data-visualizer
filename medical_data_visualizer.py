@@ -13,6 +13,10 @@ df['overweight'] = ((df['weight'] / ((df['height'] / 100) ** 2))).apply(lambda x
 # 3 Normalize data by making 0 always good and 1 always bad. If the value of cholesterol or gluc is 1, set the value to 0.
 # If the value is more than 1, set the value to 1.
 
+# For each row sets, checks if cholesterol == 1 and sets it as 0. Colesterol must always be > 0. Same thing with gluc
+df['cholesterol'] = df['cholesterol'].apply(lambda x: 0 if x == 1 else 1)
+
+df['gluc'] = df['gluc'].apply(lambda x: 0 if x == 1 else 1)
 
 # 4 Draw the Categorical Plot in the draw_cat_plot function
 def draw_cat_plot():

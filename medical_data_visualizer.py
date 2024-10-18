@@ -6,9 +6,11 @@ import numpy as np
 # 1 Import the data from medical_examination.csv and assign it to the df variable
 df = pd.read_csv('medical_examination.csv')
 
+
 # 2 Create the overweight column in the df variable (overweight is when BMI >= 25.0)
 # Sets overweight as 1 if the MBI > 25 else overweight = 0. BMI = weight (kg) / height (m)^2
 df['overweight'] = ((df['weight'] / ((df['height'] / 100) ** 2))).apply(lambda x: 1 if x > 25.0 else 0)
+
 
 # 3 Normalize data by making 0 always good and 1 always bad. If the value of cholesterol or gluc is 1, set the value to 0.
 # If the value is more than 1, set the value to 1.
@@ -18,25 +20,28 @@ df['cholesterol'] = df['cholesterol'].apply(lambda x: 0 if x == 1 else 1)
 
 df['gluc'] = df['gluc'].apply(lambda x: 0 if x == 1 else 1)
 
+
 # 4 Draw the Categorical Plot in the draw_cat_plot function
 def draw_cat_plot():
-    # 5 Create a DataFrame for the cat plot using pd.melt with values from cholesterol, gluc, 
-    # smoke, alco, active, and overweight in the df_cat variable.
-    df_cat = None
+    # 5 Create a DataFrame for the cat plot using pd.melt with values from 
+    # cholesterol, gluc, smoke, alco, active, and overweight in the df_cat variable.
+    df_cat = pd.melt(df, id_vars='cardio', var_name ='variable', value_vars=['cholesterol', 'gluc', 'smoke', 'alco', 'active', 'overweight'])
 
 
     # 6 Group and reformat the data in df_cat to split it by cardio. Show the counts of each feature. 
     # You will have to rename one of the columns for the catplot to work correctly.
-    df_cat = None
     
-
+    # Size to count the rows
+    df_cat = df_cat.groupby(['cardio', 'variable', 'value']).size().reset_index(name='total')
+    
+    
     # 7Convert the data into long format and create a chart that shows the value counts of the categorical features 
     # using the following method provided by the seaborn library import : sns.catplot()
-
+    graph = sns.catplot(data=df_cat, x='variable', y='total', hue='value', kind='bar', col='cardio')
 
 
     # 8 Get the figure for the output and store it in the fig variable
-    fig = None
+    fig = graph.figure
 
 
     # 9 Do not modify the next two lines

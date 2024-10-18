@@ -52,27 +52,42 @@ def draw_cat_plot():
 # 10 Draw the Heat Map in the draw_heat_map function
 def draw_heat_map():
     # 11 Clean the data in the df_heat variable by filtering out the following patient segments that represent incorrect data:
+    
     # diastolic pressure is higher than systolic (Keep the correct data with (df['ap_lo'] <= df['ap_hi']))
+    valid_pressure = df['ap_lo'] <= df['ap_hi']
 
     # height is less than the 2.5th percentile (Keep the correct data with (df['height'] >= df['height'].quantile(0.025)))
+    height_low = df['height'].quantile(0.025)
 
     # height is more than the 97.5th percentile
+    height_high = df['height'].quantile(0.975)
 
     # weight is less than the 2.5th percentile
+    weight_low = df['weight'].quantile(0.025)
 
-    df_heat = None
+    # weight is more than the 97.5th percentile
+    weight_high = df['weight'].quantile(0.975)
+
+    df_heat = df.loc[valid_pressure &
+        (df['height'] >= height_low) & (df['height'] <= height_high) &
+        (df['weight'] >= weight_low) & (df['weight'] <= weight_high)]
+
 
     # 12 Calculate the correlation matrix and store it in the corr variable
-    corr = None
+    corr = df_heat.corr()
+
 
     # 13 Generate a mask for the upper triangle and store it in the mask variable
-    mask = None
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+
 
     # 14 Set up the matplotlib figure
-    fig, ax = None
+    fig, ax = plt.subplots(figsize=(16, 8))
+
 
     # 15 Plot the correlation matrix using the method provided by the seaborn library import: sns.heatmap()
-
+    sns.heatmap(corr, annot=True, vmin=-0.08, vmax=0.24, center=0.01, fmt="0.1f", linewidths=.5, square=True, mask=mask, 
+            cbar_kws={'shrink': .40, 'format': '%.2f', 'ticks': [-0.08, 0.00, 0.08, 0.16, 0.24]}, ax=ax)
 
     # 16 Do not modify the next two lines
     fig.savefig('heatmap.png')

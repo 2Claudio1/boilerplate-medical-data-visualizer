@@ -7,7 +7,8 @@ import numpy as np
 df = pd.read_csv('medical_examination.csv')
 
 # 2 Create the overweight column in the df variable (overweight is when BMI >= 25.0)
-df['overweight'] = None
+# Sets overweight as 1 if the MBI > 25 else overweight = 0. BMI = weight (kg) / height (m)^2
+df['overweight'] = ((df['weight'] / ((df['height'] / 100) ** 2))).apply(lambda x: 1 if x > 25.0 else 0)
 
 # 3 Normalize data by making 0 always good and 1 always bad. If the value of cholesterol or gluc is 1, set the value to 0.
 # If the value is more than 1, set the value to 1.
